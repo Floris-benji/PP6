@@ -1,0 +1,2671 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Basketball Shoe Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --bg-elevated: #ffffff;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --accent-strong: #1d4ed8;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-subtle: #e5e7eb;
+      --danger: #ef4444;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --shadow-subtle: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    body.dark {
+      --bg: #020617;
+      --bg-elevated: #020617;
+      --accent: #f97316;
+      --accent-soft: #1f2937;
+      --accent-strong: #fb923c;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.8);
+      --shadow-subtle: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #e0f2fe, var(--bg) 40%);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #111827, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: var(--shadow-subtle);
+      text-transform: uppercase;
+    }
+
+    body.dark .logo-mark {
+      background: linear-gradient(135deg, #0f172a, #f97316);
+    }
+
+    .logo-text-main {
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .logo-text-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    body.dark .theme-toggle {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .theme-toggle:hover {
+      box-shadow: var(--shadow-subtle);
+      transform: translateY(-1px);
+    }
+
+    .btn {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 10px 18px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
+    }
+
+    body.dark .btn-primary {
+      box-shadow: 0 12px 30px rgba(249, 115, 22, 0.45);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-strong);
+      transform: translateY(-1px) translateX(0.5px);
+      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--text-main);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    body.dark .btn-ghost {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .btn-ghost:hover {
+      background: #ffffff;
+      box-shadow: var(--shadow-subtle);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 28px;
+      margin-bottom: 40px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-left {
+      padding: 24px 22px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #ffffff, #e0f2fe);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.dark .hero-left {
+      background: radial-gradient(circle at top left, #111827, #020617);
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    body.dark .hero-pill {
+      background: rgba(249, 115, 22, 0.12);
+      color: #fed7aa;
+    }
+
+    .hero-title {
+      font-size: 30px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #2563eb, #22c55e);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    body.dark .hero-title span {
+      background: linear-gradient(135deg, #f97316, #22c55e);
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 420px;
+      margin-bottom: 18px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .hero-meta-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-meta-label {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .hero-right {
+      position: relative;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    body.dark .hero-right {
+      background: #020617;
+    }
+
+    .hero-right-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .hero-right-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .hero-stat-card {
+      padding: 10px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 11px;
+    }
+
+    body.dark .hero-stat-card {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .hero-stat-label {
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .hero-stat-value {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .hero-footnote {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .layout-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr);
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 1000px) {
+      .layout-main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      padding: 18px 16px 18px;
+      box-shadow: var(--shadow-subtle);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      transition: background 0.25s ease, border-color 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    body.dark .panel {
+      border-color: #1f2937;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .filter-input,
+    .filter-select {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 10px;
+      font-size: 12px;
+      background: #f9fafb;
+      color: var(--text-main);
+      outline: none;
+      min-width: 120px;
+    }
+
+    body.dark .filter-input,
+    body.dark .filter-select {
+      background: #020617;
+      border-color: #1f2937;
+      color: var(--text-main);
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: var(--accent-strong);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+    }
+
+    .shoe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .shoe-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.16s ease, box-shadow 0.16s ease,
+        border-color 0.16s ease, background 0.16s ease;
+      position: relative;
+    }
+
+    body.dark .shoe-card {
+      background: #020617;
+      border-color: #1f2937;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    }
+
+    .shoe-card:hover {
+      transform: translateY(-3px) translateX(0.5px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      border-color: rgba(37, 99, 235, 0.4);
+    }
+
+    body.dark .shoe-card:hover {
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+      border-color: rgba(249, 115, 22, 0.6);
+    }
+
+    .shoe-card-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.82);
+      color: #f9fafb;
+      font-size: 10px;
+      font-weight: 500;
+      z-index: 2;
+    }
+
+    .shoe-card-img-wrap {
+      position: relative;
+      padding: 12px 12px 0;
+    }
+
+    .shoe-card-img {
+      width: 100%;
+      border-radius: 14px;
+      object-fit: cover;
+      max-height: 170px;
+      display: block;
+    }
+
+    .shoe-card-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .shoe-card-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .shoe-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .shoe-card-price {
+      font-weight: 600;
+      color: var(--accent-strong);
+    }
+
+    .shoe-card-positions {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .shoe-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .shoe-card-pill {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.06);
+      color: var(--accent-strong);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+    }
+
+    body.dark .shoe-card-pill {
+      background: rgba(249, 115, 22, 0.12);
+      border-color: rgba(249, 115, 22, 0.5);
+      color: #fed7aa;
+    }
+
+    .shoe-card-cta {
+      font-size: 11px;
+      color: var(--accent-strong);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .quiz-header {
+      margin-bottom: 12px;
+    }
+
+    .quiz-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .quiz-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .quiz-progress {
+      margin-bottom: 10px;
+    }
+
+    .quiz-progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .quiz-progress-bar {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    body.dark .quiz-progress-bar {
+      background: #111827;
+    }
+
+    .quiz-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2563eb, #22c55e);
+      transition: width 0.2s ease;
+    }
+
+    body.dark .quiz-progress-fill {
+      background: linear-gradient(90deg, #f97316, #22c55e);
+    }
+
+    .quiz-question {
+      margin-bottom: 12px;
+    }
+
+    .quiz-question-text {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .quiz-option {
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      padding: 7px 10px;
+      font-size: 12px;
+      text-align: left;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.16s ease;
+    }
+
+    body.dark .quiz-option {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .quiz-option:hover {
+      border-color: rgba(37, 99, 235, 0.5);
+      background: #ffffff;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    body.dark .quiz-option:hover {
+      background: #020617;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+      border-color: rgba(249, 115, 22, 0.7);
+    }
+
+    .quiz-option.selected {
+      border-color: var(--accent-strong);
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25);
+    }
+
+    body.dark .quiz-option.selected {
+      box-shadow: 0 10px 24px rgba(249, 115, 22, 0.5);
+    }
+
+    .quiz-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .quiz-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .quiz-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 7px 12px;
+      font-size: 12px;
+    }
+
+    .btn-secondary {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      color: var(--text-main);
+    }
+
+    body.dark .btn-secondary {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .btn-secondary:hover {
+      background: #ffffff;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .btn-primary[disabled],
+    .btn-secondary[disabled] {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .quiz-result {
+      margin-top: 12px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      display: none;
+    }
+
+    body.dark .quiz-result {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .quiz-result-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .quiz-result-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .quiz-result-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-result-card {
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      padding: 8px;
+      font-size: 11px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    body.dark .quiz-result-card {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .quiz-result-card:hover {
+      border-color: var(--accent-strong);
+      box-shadow: var(--shadow-subtle);
+      transform: translateY(-2px);
+    }
+
+    .quiz-result-card-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .quiz-result-card-meta {
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .quiz-result-card-score {
+      font-size: 10px;
+      color: var(--accent-strong);
+    }
+
+    .quiz-result-note {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      max-width: 720px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.45);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+    }
+
+    body.dark .modal {
+      background: #020617;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+    }
+
+    @media (max-width: 800px) {
+      .modal {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .modal-left {
+      position: relative;
+      background: #020617;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .modal-left img {
+      width: 100%;
+      border-radius: 16px;
+      object-fit: cover;
+      max-height: 260px;
+    }
+
+    .modal-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 11px;
+    }
+
+    .modal-price {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.95);
+      color: #eff6ff;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    body.dark .modal-price {
+      background: rgba(249, 115, 22, 0.95);
+    }
+
+    .modal-left-meta {
+      font-size: 11px;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .modal-right {
+      padding: 16px 16px 14px;
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border-radius: 999px;
+      border: none;
+      background: #f3f4f6;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      color: #4b5563;
+    }
+
+    body.dark .modal-close-btn {
+      background: #111827;
+      color: #e5e7eb;
+    }
+
+    .modal-close-btn:hover {
+      background: #e5e7eb;
+    }
+
+    body.dark .modal-close-btn:hover {
+      background: #1f2937;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .modal-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .modal-fit {
+      font-size: 11px;
+      color: var(--accent-strong);
+      margin-bottom: 8px;
+    }
+
+    .modal-row {
+      margin-bottom: 8px;
+    }
+
+    .modal-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .modal-colorways {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .modal-color-pill {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+    }
+
+    body.dark .modal-color-pill {
+      background: #020617;
+      border-color: #1f2937;
+    }
+
+    .modal-list {
+      list-style: none;
+      font-size: 11px;
+      color: var(--text-main);
+      padding-left: 0;
+    }
+
+    .modal-list li {
+      margin-bottom: 3px;
+    }
+
+    .modal-footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .modal-size-info {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .modal-buy-link {
+      font-size: 12px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+    }
+
+    .modal-buy-link:hover {
+      background: var(--accent-strong);
+    }
+
+    footer {
+      margin-top: 32px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 12px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .hero-left {
+        padding: 18px 16px;
+      }
+      .hero-right {
+        padding: 14px;
+      }
+      .panel {
+        padding: 14px 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="logo">
+        <div class="logo-mark">BF</div>
+        <div>
+          <div class="logo-text-main">Basketball Finder</div>
+          <div class="logo-text-sub">Smart engine for real hoop shoes</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle">
+          <span id="themeIcon">🌞</span>
+          <span id="themeLabel">Light</span>
+        </button>
+        <button class="btn btn-ghost" id="scrollToGridBtn">
+          Browse all shoes
+        </button>
+        <button class="btn btn-primary" id="heroQuizBtn">
+          Start quiz
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-left">
+        <div class="hero-pill">
+          <span>🏀 Smart shoe matcher</span>
+          <span>v1.1</span>
+        </div>
+        <h1 class="hero-title">
+          Find the <span>perfect basketball shoe</span> for your game.
+        </h1>
+        <p class="hero-subtitle">
+          Answer a few quick questions about your feet, position, and court.
+          We’ll match you with real, popular models from Nike, Jordan, adidas, Puma, UA, New Balance and more.
+        </p>
+        <div class="hero-cta-row">
+          <button class="btn btn-primary" id="scrollToQuizBtn">
+            Take the quiz
+          </button>
+          <button class="btn btn-ghost" id="scrollToGridBtn">
+            Explore the catalog
+          </button>
+        </div>
+        <div class="hero-meta-row">
+          <div>
+            <span class="hero-meta-label">Real models ·</span>
+            LeBron, KD, Kobe Protro, Curry, Dame, Harden, Luka, Zion, MB.01, WOW, KT & more.
+          </div>
+          <div>
+            <span class="hero-meta-label">Dialed to you ·</span>
+            Foot width, play style, court, budget, support.
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-right-title">Live quiz preview</div>
+        <div class="hero-right-sub">
+          Your answers tune the recommendation engine in real time.
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat-card">
+            <div class="hero-stat-label">Shoes in catalog</div>
+            <div class="hero-stat-value" id="shoeCountLabel">0</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="hero-stat-label">Positions covered</div>
+            <div class="hero-stat-value">1–5</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="hero-stat-label">Court types</div>
+            <div class="hero-stat-value">Indoor &amp; outdoor</div>
+          </div>
+        </div>
+        <div class="hero-footnote">
+          Popular picks include LeBron 20, KD 15/16, Kobe 6 Protro, Curry Flow, Dame, Harden, Luka, Zion, MB.01 and more.
+        </div>
+      </div>
+    </section>
+
+    <div class="layout-main">
+      <section class="panel">
+        <div id="shoeGridTop" style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">
+          Catalog · Popular basketball shoes
+        </div>
+        <div class="section-header">
+          <div>
+            <div class="section-title">All shoes</div>
+            <div class="section-subtitle">
+              Search, filter, then click any shoe to see full details, colorways, materials and where to buy.
+            </div>
+          </div>
+        </div>
+
+        <div class="filters-row">
+          <input
+            type="text"
+            id="searchInput"
+            class="filter-input"
+            placeholder="Search by name or brand..."
+          />
+          <select id="brandFilter" class="filter-select">
+            <option value="">All brands</option>
+            <option value="Nike">Nike</option>
+            <option value="Jordan">Jordan</option>
+            <option value="adidas">adidas</option>
+            <option value="Under Armour">Under Armour</option>
+            <option value="Puma">Puma</option>
+            <option value="New Balance">New Balance</option>
+            <option value="Li-Ning">Li-Ning</option>
+            <option value="Anta">Anta</option>
+          </select>
+          <select id="positionFilter" class="filter-select">
+            <option value="">All positions</option>
+            <option value="PG">Point Guard</option>
+            <option value="SG">Shooting Guard</option>
+            <option value="SF">Small Forward</option>
+            <option value="PF">Power Forward</option>
+            <option value="C">Center</option>
+          </select>
+          <select id="budgetFilter" class="filter-select">
+            <option value="">Any budget</option>
+            <option value="low">Under €100</option>
+            <option value="mid">€100–150</option>
+            <option value="high">€150+</option>
+          </select>
+        </div>
+
+        <div class="shoe-grid" id="shoeGrid"></div>
+      </section>
+
+      <section class="panel" id="quizPanel">
+        <div class="quiz-header">
+          <div class="quiz-title">Find your perfect pair</div>
+          <div class="quiz-subtitle">
+            We’ll score every shoe based on your answers and show your top matches.
+          </div>
+        </div>
+
+        <div class="quiz-progress">
+          <div class="quiz-progress-top">
+            <span id="quizStepLabel">Question 1</span>
+            <span id="quizProgressPercent">0%</span>
+          </div>
+          <div class="quiz-progress-bar">
+            <div class="quiz-progress-fill" id="quizProgressFill"></div>
+          </div>
+        </div>
+
+        <div id="quizQuestionContainer"></div>
+
+        <div class="quiz-footer">
+          <div class="quiz-hint" id="quizHint">
+            Choose one option to continue.
+          </div>
+          <div class="quiz-nav">
+            <button class="btn btn-secondary btn-sm" id="quizBackBtn">
+              Back
+            </button>
+            <button class="btn btn-primary btn-sm" id="quizNextBtn">
+              <span id="quizNextLabel">Next</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="quiz-result" id="quizResult">
+          <div class="quiz-result-title">
+            Your top matches
+          </div>
+          <div class="quiz-result-meta" id="quizResultMeta"></div>
+          <div class="quiz-result-cards" id="quizResultCards"></div>
+          <div class="quiz-result-note">
+            Click a card to open full details. You can always tweak your answers and re-run the quiz.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div>Basketball Finder · Built for hoopers who care about their shoes.</div>
+      <div>Tip: lock in your size in-store, then use this to pick the right model.</div>
+    </footer>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="shoeModalBackdrop">
+    <div class="modal">
+      <div class="modal-left">
+        <img id="modalImage" src="" alt="" />
+        <div class="modal-tag" id="modalTag"></div>
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-left-meta">
+          <span id="modalPositions"></span>
+          <span id="modalCourt"></span>
+        </div>
+      </div>
+      <div class="modal-right">
+        <button class="modal-close-btn" id="modalCloseBtn">✕</button>
+        <div class="modal-title" id="modalName"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+        <div class="modal-fit" id="modalFit"></div>
+
+        <div class="modal-row">
+          <div class="modal-label">Colorways</div>
+          <div class="modal-colorways" id="modalColorways"></div>
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-label">Materials</div>
+          <ul class="modal-list" id="modalMaterials"></ul>
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-label">Performance</div>
+          <ul class="modal-list" id="modalSpecs"></ul>
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-label">Sizing notes</div>
+          <ul class="modal-list" id="modalSizing"></ul>
+        </div>
+
+        <div class="modal-footer">
+          <div class="modal-size-info" id="modalSizeInfo"></div>
+          <a class="modal-buy-link" id="modalBuyLink" target="_blank" rel="noopener">
+            Buy / check availability ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // Data: shoe catalog (real popular models)
+    // -----------------------------
+    const shoes = [
+      {
+        {
+  id: "lebron-20",
+  name: "Nike LeBron 20",
+  brand: "Nike",
+  price: 200,
+  tag: "Premium cushioning",
+  image: "https://images.stockx.com/images/Nike-LeBron-20-Time-Machine-Product.jpg",
+  fit: "Regular, slightly snug",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SF", "PF"],
+  colorways: ["Time Machine", "Trinity", "Pink Diamond"],
+  materials: ["Woven upper", "Zoom Air forefoot + heel"],
+  specs: ["Balanced cushioning", "Great for wings"],
+  sizing: ["True to size", "Wide feet half-size up"],
+  sizeInfo: "US 7–16",
+  buyUrl: "https://stockx.com/nike-lebron-20",
+  playStyle: "power-wing",
+  cushioning: "soft",
+  support: "low",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "kd-15",
+  name: "Nike KD 15",
+  brand: "Nike",
+  price: 150,
+  tag: "Scoring machine",
+  image: "https://images.stockx.com/images/Nike-KD-15-Brooklyn-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SG", "SF"],
+  colorways: ["Brooklyn", "Aunt Pearl", "Black/White"],
+  materials: ["Mesh upper", "Zoom Strobel"],
+  specs: ["Great bounce", "Good for scoring wings"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/nike-kd-15",
+  playStyle: "shooter",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "kd-16",
+  name: "Nike KD 16",
+  brand: "Nike",
+  price: 160,
+  tag: "Versatile scorer",
+  image: "https://images.stockx.com/images/Nike-KD-16-Aunt-Pearl-Product.jpg",
+  fit: "Regular to slightly wide",
+  fitType: "wide",
+  court: "Indoor",
+  positions: ["SG", "SF", "PF"],
+  colorways: ["Aunt Pearl", "USA", "Black/White"],
+  materials: ["Textile upper", "Zoom + Cushlon"],
+  specs: ["Stable platform", "Comfortable cushioning"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–16",
+  buyUrl: "https://stockx.com/nike-kd-16",
+  playStyle: "all-around",
+  cushioning: "soft",
+  support: "mid",
+  traction: "balanced",
+  budget: "high"
+},
+{
+  id: "kobe-6-protro",
+  name: "Nike Kobe 6 Protro",
+  brand: "Nike",
+  price: 190,
+  tag: "Iconic low-top",
+  image: "https://images.stockx.com/images/Nike-Kobe-6-Protro-Grinch-Product.jpg",
+  fit: "Snug",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["Grinch", "Mambacita", "All-Star"],
+  materials: ["Synthetic snake upper", "Zoom Air"],
+  specs: ["Elite court feel", "Best on clean courts"],
+  sizing: ["Runs small"],
+  sizeInfo: "US 6–14",
+  buyUrl: "https://stockx.com/nike-kobe-6-protro",
+  playStyle: "shooter",
+  cushioning: "firm",
+  support: "low",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "pg-6",
+  name: "Nike PG 6",
+  brand: "Nike",
+  price: 120,
+  tag: "Guard favorite",
+  image: "https://images.stockx.com/images/Nike-PG-6-Black-White-Product.jpg",
+  fit: "Regular to slightly narrow",
+  fitType: "narrow",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG"],
+  colorways: ["Black/White", "Sunrise", "White"],
+  materials: ["Mesh upper", "React foam"],
+  specs: ["Responsive", "Great for quick guards"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/nike-pg-6",
+  playStyle: "shifty-guard",
+  cushioning: "balanced",
+  support: "low",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "gt-cut-2",
+  name: "Nike Zoom GT Cut 2",
+  brand: "Nike",
+  price: 180,
+  tag: "Elite guard shoe",
+  image: "https://images.stockx.com/images/Nike-Air-Zoom-GT-Cut-2-Sabrina-Product.jpg",
+  fit: "Snug",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG", "SG"],
+  colorways: ["Sabrina", "Black/White", "Multi"],
+  materials: ["Textile upper", "Zoom + React"],
+  specs: ["Low to ground", "Insane traction"],
+  sizing: ["Runs small"],
+  sizeInfo: "US 6–15",
+  buyUrl: "https://stockx.com/nike-zoom-gt-cut-2",
+  playStyle: "shifty-guard",
+  cushioning: "firm",
+  support: "low",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "zoom-freak-4",
+  name: "Nike Zoom Freak 4",
+  brand: "Nike",
+  price: 130,
+  tag: "Giannis line",
+  image: "https://images.stockx.com/images/Nike-Zoom-Freak-4-Barely-Volt-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["SF", "PF"],
+  colorways: ["Bucks", "Volt", "Black/White"],
+  materials: ["Mesh upper", "Zoom forefoot"],
+  specs: ["Stable base", "Good traction"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/nike-zoom-freak-4",
+  playStyle: "slasher",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "balanced",
+  budget: "mid"
+},
+{
+  id: "jordan-36",
+  name: "Air Jordan 36",
+  brand: "Jordan",
+  price: 185,
+  tag: "Lightweight performance",
+  image: "https://images.stockx.com/images/Air-Jordan-36-First-Light-Product.jpg",
+  fit: "Snug",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["First Light", "Psychic Energy"],
+  materials: ["Lenoweave", "Zoom Strobel"],
+  specs: ["Very light", "Responsive"],
+  sizing: ["Runs small"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/air-jordan-36",
+  playStyle: "two-way-guard",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "jordan-37",
+  name: "Air Jordan 37",
+  brand: "Jordan",
+  price: 185,
+  tag: "Explosive leapers",
+  image: "https://images.stockx.com/images/Air-Jordan-37-Beyond-Borders-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SG", "SF", "PF"],
+  colorways: ["Beyond Borders", "Hare"],
+  materials: ["Lenoweave", "Zoom + Formula 23"],
+  specs: ["Bouncy", "Supportive"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/air-jordan-37",
+  playStyle: "power-wing",
+  cushioning: "soft",
+  support: "high",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "jordan-38",
+  name: "Air Jordan 38",
+  brand: "Jordan",
+  price: 200,
+  tag: "Modern flagship",
+  image: "https://images.stockx.com/images/Air-Jordan-38-Fundamental-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["Fundamental", "Aqua"],
+  materials: ["Textile upper", "Zoom Strobel"],
+  specs: ["Balanced", "Premium"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/air-jordan-38",
+  playStyle: "all-around",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "luka-1",
+  name: "Jordan Luka 1",
+  brand: "Jordan",
+  price: 110,
+  tag: "Step-back control",
+  image: "https://images.stockx.com/images/Jordan-Luka-1-Neo-Turquoise-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG"],
+  colorways: ["Neo Turquoise", "Bred"],
+  materials: ["Textile upper", "Formula 23 foam"],
+  specs: ["Stable", "Good traction"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/jordan-luka-1",
+  playStyle: "iso-guard",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "balanced",
+  budget: "mid"
+},
+{
+  id: "zion-2",
+  name: "Jordan Zion 2",
+  brand: "Jordan",
+  price: 120,
+  tag: "Power slasher",
+  image: "https://images.stockx.com/images/Jordan-Zion-2-Voodoo-Product.jpg",
+  fit: "Regular to wide",
+  fitType: "wide",
+  court: "Indoor / outdoor",
+  positions: ["SF", "PF"],
+  colorways: ["Voodoo", "Pelicans"],
+  materials: ["Textile upper", "Zoom + foam"],
+  specs: ["Very stable", "Good for big wings"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–16",
+  buyUrl: "https://stockx.com/jordan-zion-2",
+  playStyle: "slasher",
+  cushioning: "soft",
+  support: "high",
+  traction: "durability",
+  budget: "mid"
+},
+{
+  id: "harden-7",
+  name: "adidas Harden Vol. 7",
+  brand: "adidas",
+  price: 160,
+  tag: "Step-back specialist",
+  image: "https://images.stockx.com/images/adidas-Harden-Vol-7-Black-White-Product.jpg",
+  fit: "Regular to wide",
+  fitType: "wide",
+  court: "Indoor",
+  positions: ["SG", "SF"],
+  colorways: ["Black/White", "Purple"],
+  materials: ["Textile upper", "Boost + Lightstrike"],
+  specs: ["Impact protection", "Stable"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/adidas-harden-vol-7",
+  playStyle: "iso-guard",
+  cushioning: "soft",
+  support: "mid",
+  traction: "balanced",
+  budget: "high"
+},
+{
+  id: "dame-8",
+  name: "adidas Dame 8",
+  brand: "adidas",
+  price: 130,
+  tag: "Two-way guard",
+  image: "https://images.stockx.com/images/adidas-Dame-8-Blazers-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG"],
+  colorways: ["Blazers", "Black"],
+  materials: ["Textile upper", "Bounce Pro"],
+  specs: ["Balanced", "Durable outsole"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/adidas-dame-8",
+  playStyle: "two-way-guard",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "durability",
+  budget: "mid"
+},
+{
+  id: "trae-2",
+  name: "adidas Trae Young 2",
+  brand: "adidas",
+  price: 140,
+  tag: "Shifty guard",
+  image: "https://images.stockx.com/images/adidas-Trae-Young-2-Ice-Trae-Product.jpg",
+  fit: "Regular to narrow",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG"],
+  colorways: ["Ice Trae", "Hawks"],
+  materials: ["Textile upper", "Boost + Lightstrike"],
+  specs: ["Court feel", "Bounce"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/adidas-trae-young-2",
+  playStyle: "shifty-guard",
+  cushioning: "balanced",
+  support: "low",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "curry-flow-9",
+  name: "Curry Flow 9",
+  brand: "Under Armour",
+  price: 160,
+  tag: "Shooter’s choice",
+  image: "https://images.stockx.com/images/Under-Armour-Curry-Flow-9-Splash-Party-Product.jpg",
+  fit: "Snug",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG", "SG"],
+  colorways: ["Splash Party", "Dub Nation"],
+  materials: ["Warp upper", "Flow foam"],
+  specs: ["Elite traction", "Lightweight"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/under-armour-curry-flow-9",
+  playStyle: "shooter",
+  cushioning: "firm",
+  support: "low",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "embiid-1",
+  name: "Under Armour Embiid One",
+  brand: "Under Armour",
+  price: 130,
+  tag: "Big man ready",
+  image: "https://images.stockx.com/images/Under-Armour-Embiid-One-White-Blue-Product.jpg",
+  fit: "Regular to wide",
+  fitType: "wide",
+  court: "Indoor / outdoor",
+  positions: ["PF", "C"],
+  colorways: ["Sixers", "Black/Gold"],
+  materials: ["Mesh upper", "Micro G + HOVR"],
+  specs: ["Stable", "Impact protection"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–16",
+  buyUrl: "https://stockx.com/under-armour-embiid-one",
+  playStyle: "big",
+  cushioning: "soft",
+  support: "high",
+  traction: "durability",
+  budget: "mid"
+},
+{
+  id: "mb-01",
+  name: "Puma MB.01",
+  brand: "Puma",
+  price: 130,
+  tag: "LaMelo’s first",
+  image: "https://images.stockx.com/images/Puma-MB-01-Rick-and-Morty-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["Rick & Morty", "Buzz City"],
+  materials: ["Mesh upper", "Nitro foam"],
+  specs: ["Bouncy", "Durable"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/puma-mb-01",
+  playStyle: "all-around",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "durability",
+  budget: "mid"
+},
+{
+  id: "two-wxy-v3",
+  name: "New Balance TWO WXY v3",
+  brand: "New Balance",
+  price: 130,
+  tag: "Supportive guard/wing",
+  image: "https://images.stockx.com/images/New-Balance-TWO-WXY-V3-Black-Teal-Product.jpg",
+  fit: "Regular to wide",
+{
+  id: "wow-10",
+  name: "Li-Ning Way of Wade 10",
+  brand: "Li-Ning",
+  price: 225,
+  tag: "Premium Wade line",
+  image: "https://images.stockx.com/images/Li-Ning-Way-of-Wade-10-Sunrise-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SG", "SF"],
+  colorways: ["Sunrise", "Miami", "Black/White"],
+  materials: ["Textile upper", "Carbon fiber support", "Boom cushioning"],
+  specs: ["Very bouncy", "Premium feel"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–14",
+  buyUrl: "https://stockx.com/li-ning-way-of-wade-10",
+  playStyle: "shooter",
+  cushioning: "soft",
+  support: "mid",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "anta-kt7",
+  name: "Anta KT 7",
+  brand: "Anta",
+  price: 150,
+  tag: "Shooter’s wing",
+  image: "https://images.stockx.com/images/ANTA-KT-7-Splash-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SG", "SF"],
+  colorways: ["Splash", "Black/White", "Blue"],
+  materials: ["Textile upper", "NitroEdge cushioning"],
+  specs: ["Smooth ride", "Great for shooters"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–14",
+  buyUrl: "https://stockx.com/anta-kt-7",
+  playStyle: "shooter",
+  cushioning: "soft",
+  support: "mid",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "anta-kt8",
+  name: "Anta KT 8",
+  brand: "Anta",
+  price: 160,
+  tag: "Klay Thompson model",
+  image: "https://images.stockx.com/images/ANTA-KT-8-Black-White-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SG", "SF"],
+  colorways: ["Black/White", "Splash", "Blue Ice"],
+  materials: ["Textile upper", "NitroEdge cushioning"],
+  specs: ["Stable", "Smooth transition"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–14",
+  buyUrl: "https://stockx.com/anta-kt-8",
+  playStyle: "shooter",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "wow-808-3",
+  name: "Li-Ning 808 3",
+  brand: "Li-Ning",
+  price: 150,
+  tag: "Budget beast",
+  image: "https://images.stockx.com/images/Li-Ning-808-3-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG"],
+  colorways: ["Black", "White", "Blue"],
+  materials: ["Mesh upper", "Boom cushioning"],
+  specs: ["Great value", "Good traction"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–14",
+  buyUrl: "https://stockx.com/li-ning-808-3",
+  playStyle: "two-way-guard",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "durability",
+  budget: "mid"
+},
+{
+  id: "mb-02",
+  name: "Puma MB.02",
+  brand: "Puma",
+  price: 140,
+  tag: "LaMelo’s second",
+  image: "https://images.stockx.com/images/Puma-MB-02-Supernova-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["Supernova", "Phenom", "White"],
+  materials: ["Mesh upper", "Nitro foam"],
+  specs: ["Bouncy", "Supportive"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/puma-mb-02",
+  playStyle: "all-around",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "durability",
+  budget: "mid"
+},
+{
+  id: "mb-03",
+  name: "Puma MB.03",
+  brand: "Puma",
+  price: 150,
+  tag: "LaMelo’s third",
+  image: "https://images.stockx.com/images/Puma-MB-03-GutterMelo-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["GutterMelo", "Toxic", "Blue Hive"],
+  materials: ["Engineered mesh", "Nitro foam"],
+  specs: ["Explosive", "Great traction"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/puma-mb-03",
+  playStyle: "all-around",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "curry-10",
+  name: "Curry Flow 10",
+  brand: "Under Armour",
+  price: 160,
+  tag: "Elite traction",
+  image: "https://images.stockx.com/images/Under-Armour-Curry-Flow-10-Product.jpg",
+  fit: "Snug",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG", "SG"],
+  colorways: ["Iron Sharpens Iron", "Dub Nation"],
+  materials: ["Warp upper", "Flow foam"],
+  specs: ["Insane grip", "Lightweight"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/under-armour-curry-flow-10",
+  playStyle: "shooter",
+  cushioning: "firm",
+  support: "low",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "curry-11",
+  name: "Curry Flow 11",
+  brand: "Under Armour",
+  price: 170,
+  tag: "Latest Curry model",
+  image: "https://images.stockx.com/images/Under-Armour-Curry-11-Future-Curry-Product.jpg",
+  fit: "Snug",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG", "SG"],
+  colorways: ["Future Curry", "Dub Nation"],
+  materials: ["Warp upper", "Flow cushioning"],
+  specs: ["Elite traction", "Lightweight"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/under-armour-curry-11",
+  playStyle: "shooter",
+  cushioning: "firm",
+  support: "low",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "ua-lockdown-6",
+  name: "Under Armour Lockdown 6",
+  brand: "Under Armour",
+  price: 75,
+  tag: "Budget pick",
+  image: "https://images.stockx.com/images/Under-Armour-Lockdown-6-Black-White-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Outdoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["Black/White", "Red", "Blue"],
+  materials: ["Synthetic upper", "EVA cushioning"],
+  specs: ["Durable", "Affordable"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/under-armour-lockdown-6",
+  playStyle: "two-way-guard",
+  cushioning: "firm",
+  support: "mid",
+  traction: "durability",
+  budget: "low"
+},
+{
+  id: "new-balance-kawhi-2",
+  name: "New Balance Kawhi 2",
+  brand: "New Balance",
+  price: 160,
+  tag: "Kawhi signature",
+  image: "https://images.stockx.com/images/New-Balance-Kawhi-2-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SF", "PF"],
+  colorways: ["Ocean Blue", "Black Ice"],
+  materials: ["Knit upper", "FuelCell cushioning"],
+  specs: ["Supportive", "Stable"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/new-balance-kawhi-2",
+  playStyle: "power-wing",
+  cushioning: "balanced",
+  support: "high",
+  traction: "grip",
+  budget: "high"
+},
+{
+  id: "new-balance-two-wxy-v4",
+  name: "New Balance TWO WXY v4",
+  brand: "New Balance",
+  price: 140,
+  tag: "Versatile wing shoe",
+  image: "https://images.stockx.com/images/New-Balance-TWO-WXY-V4-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["SG", "SF"],
+  colorways: ["Black", "White", "Blue"],
+  materials: ["Knit upper", "FuelCell"],
+  specs: ["Supportive", "Responsive"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/new-balance-two-wxy-v4",
+  playStyle: "slasher",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "li-ning-sonic-11",
+  name: "Li-Ning Sonic 11",
+  brand: "Li-Ning",
+  price: 140,
+  tag: "Guard-focused",
+  image: "https://images.stockx.com/images/Li-Ning-Sonic-11-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor",
+  positions: ["PG", "SG"],
+  colorways: ["Black", "White", "Blue"],
+  materials: ["Mesh upper", "Boom cushioning"],
+  specs: ["Quick", "Responsive"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–14",
+  buyUrl: "https://stockx.com/li-ning-sonic-11",
+  playStyle: "shifty-guard",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "anta-shock-the-game-6",
+  name: "Anta Shock The Game 6",
+  brand: "Anta",
+  price: 90,
+  tag: "Outdoor beast",
+  image: "https://images.stockx.com/images/ANTA-Shock-The-Game-6-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Outdoor",
+  positions: ["PG", "SG", "SF"],
+  colorways: ["Black", "White", "Red"],
+  materials: ["Synthetic mesh", "EVA cushioning"],
+  specs: ["Durable outsole", "Great for outdoor"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–14",
+  buyUrl: "https://stockx.com/anta-shock-the-game-6",
+  playStyle: "two-way-guard",
+  cushioning: "firm",
+  support: "mid",
+  traction: "durability",
+  budget: "low"
+},
+{
+  id: "nike-giannis-immortality-3",
+  name: "Nike Giannis Immortality 3",
+  brand: "Nike",
+  price: 90,
+  tag: "Budget Giannis",
+  image: "https://images.stockx.com/images/Nike-Giannis-Immortality-3-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["SF", "PF"],
+  colorways: ["Black", "White", "Bucks"],
+  materials: ["Mesh upper", "Foam midsole"],
+  specs: ["Stable", "Affordable"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/nike-giannis-immortality-3",
+  playStyle: "slasher",
+  cushioning: "firm",
+  support: "mid",
+  traction: "durability",
+  budget: "low"
+},
+{
+  id: "nike-precision-6",
+  name: "Nike Precision 6",
+  brand: "Nike",
+  price: 75,
+  tag: "Budget guard shoe",
+  image: "https://images.stockx.com/images/Nike-Precision-6-Black-White-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Outdoor",
+  positions: ["PG", "SG"],
+  colorways: ["Black/White", "Red", "Blue"],
+  materials: ["Mesh upper", "Foam cushioning"],
+  specs: ["Durable", "Lightweight"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/nike-precision-6",
+  playStyle: "two-way-guard",
+  cushioning: "firm",
+  support: "mid",
+  traction: "durability",
+  budget: "low"
+},
+{
+  id: "nike-kd-trey-5-x",
+  name: "Nike KD Trey 5 X",
+  brand: "Nike",
+  price: 100,
+  tag: "Budget KD",
+  image: "https://images.stockx.com/images/Nike-KD-Trey-5-X-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["SG", "SF"],
+  colorways: ["Black", "White", "Blue"],
+  materials: ["Mesh upper", "Renew foam"],
+  specs: ["Comfortable", "Good value"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/nike-kd-trey-5-x",
+  playStyle: "shooter",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "balanced",
+  budget: "mid"
+},
+{
+  id: "adidas-don-issue-4",
+  name: "adidas D.O.N. Issue #4",
+  brand: "adidas",
+  price: 120,
+  tag: "Donovan Mitchell",
+  image: "https://images.stockx.com/images/adidas-DON-Issue-4-Product.jpg",
+  fit: "Regular",
+  fitType: "regular",
+  court: "Indoor / outdoor",
+  positions: ["PG", "SG"],
+  colorways: ["Spider", "Black", "White"],
+  materials: ["Textile upper", "Lightstrike"],
+  specs: ["Quick", "Supportive"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/adidas-don-issue-4",
+  playStyle: "slasher",
+  cushioning: "balanced",
+  support: "mid",
+  traction: "durability",
+  budget: "mid"
+},
+{
+  id: "adidas-harden-vol-6",
+  name: "adidas Harden Vol. 6",
+  brand: "adidas",
+  price: 150,
+  tag: "Harden model",
+  image: "https://images.stockx.com/images/adidas-Harden-Vol-6-Product.jpg",
+  fit: "Regular to wide",
+  fitType: "wide",
+  court: "Indoor",
+  positions: ["SG", "SF"],
+  colorways: ["Black", "Pink", "White"],
+  materials: ["Textile upper", "Boost"],
+  specs: ["Comfortable", "Stable"],
+  sizing: ["True to size"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/adidas-harden-vol-6",
+  playStyle: "iso-guard",
+  cushioning: "soft",
+  support: "mid",
+  traction: "balanced",
+  budget: "high"
+},
+{
+  id: "nike-kyrie-low-5",
+  name: "Nike Kyrie Low 5",
+  brand: "Nike",
+  price: 120,
+  tag: "Quick guard shoe",
+  image: "https://images.stockx.com/images/Nike-Kyrie-Low-5-Product.jpg",
+  fit: "Snug",
+  fitType: "narrow",
+  court: "Indoor",
+  positions: ["PG", "SG"],
+  colorways: ["Black", "White", "Multi"],
+  materials: ["Mesh upper", "Zoom Air"],
+  specs: ["Quick", "Low to ground"],
+  sizing: ["Runs small"],
+  sizeInfo: "US 7–15",
+  buyUrl: "https://stockx.com/nike-kyrie-low-5",
+  playStyle: "shifty-guard",
+  cushioning: "firm",
+  support: "low",
+  traction: "grip",
+  budget: "mid"
+},
+{
+  id: "nike-gt-jump-2",
+  name: "Nike GT Jump 2",
+  brand: "Nike",
+  price: 190,
+  tag:
+      },
+    ];
+
+    // -----------------------------
+    // Theme toggle
+    // -----------------------------
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    const themeLabel = document.getElementById("themeLabel");
+
+    function setTheme(mode) {
+      if (mode === "dark") {
+        document.body.classList.add("dark");
+        themeIcon.textContent = "🌙";
+        themeLabel.textContent = "Dark";
+        localStorage.setItem("bf-theme", "dark");
+      } else {
+        document.body.classList.remove("dark");
+        themeIcon.textContent = "🌞";
+        themeLabel.textContent = "Light";
+        localStorage.setItem("bf-theme", "light");
+      }
+    }
+
+    const savedTheme = localStorage.getItem("bf-theme");
+    if (savedTheme === "dark") setTheme("dark");
+    else setTheme("light");
+
+    themeToggle.addEventListener("click", () => {
+      if (document.body.classList.contains("dark")) setTheme("light");
+      else setTheme("dark");
+    });
+
+    // -----------------------------
+    // Render shoe grid + filters
+    // -----------------------------
+    const shoeGridEl = document.getElementById("shoeGrid");
+    const searchInput = document.getElementById("searchInput");
+    const brandFilter = document.getElementById("brandFilter");
+    const positionFilter = document.getElementById("positionFilter");
+    const budgetFilter = document.getElementById("budgetFilter");
+    const shoeCountLabel = document.getElementById("shoeCountLabel");
+
+    function passesFilters(shoe) {
+      const search = searchInput.value.trim().toLowerCase();
+      const brand = brandFilter.value;
+      const pos = positionFilter.value;
+      const budget = budgetFilter.value;
+
+      if (search) {
+        const haystack = (shoe.name + " " + shoe.brand).toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+
+      if (brand && shoe.brand !== brand) return false;
+      if (pos && !shoe.positions.includes(pos)) return false;
+      if (budget && shoe.budget !== budget) return false;
+
+      return true;
+    }
+
+    function renderShoeGrid() {
+      shoeGridEl.innerHTML = "";
+      const filtered = shoes.filter(passesFilters);
+      shoeCountLabel.textContent = `${filtered.length}`;
+
+      filtered.forEach((shoe) => {
+        const card = document.createElement("div");
+        card.className = "shoe-card";
+        card.dataset.id = shoe.id;
+
+        card.innerHTML = `
+          <div class="shoe-card-tag">${shoe.tag}</div>
+          <div class="shoe-card-img-wrap">
+            <img class="shoe-card-img" src="${shoe.image}" alt="${shoe.name}" />
+          </div>
+          <div class="shoe-card-body">
+            <div class="shoe-card-name">${shoe.name}</div>
+            <div class="shoe-card-meta">
+              <span><strong>${shoe.brand}</strong></span>
+              <span class="shoe-card-price">€${shoe.price}</span>
+            </div>
+            <div class="shoe-card-positions">
+              ${shoe.positions.join(" · ")} · ${shoe.court}
+            </div>
+            <div class="shoe-card-footer">
+              <div class="shoe-card-pill">${shoe.fit}</div>
+              <div class="shoe-card-cta">
+                <span>View details</span>
+                <span>↗</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener("click", () => openShoeModal(shoe.id));
+        shoeGridEl.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", renderShoeGrid);
+    brandFilter.addEventListener("change", renderShoeGrid);
+    positionFilter.addEventListener("change", renderShoeGrid);
+    budgetFilter.addEventListener("change", renderShoeGrid);
+
+    renderShoeGrid();
+
+    // -----------------------------
+    // Modal logic
+    // -----------------------------
+    const modalBackdrop = document.getElementById("shoeModalBackdrop");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+
+    const modalImage = document.getElementById("modalImage");
+    const modalTag = document.getElementById("modalTag");
+    const modalPrice = document.getElementById("modalPrice");
+    const modalName = document.getElementById("modalName");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const modalFit = document.getElementById("modalFit");
+    const modalPositions = document.getElementById("modalPositions");
+    const modalCourt = document.getElementById("modalCourt");
+    const modalColorways = document.getElementById("modalColorways");
+    const modalMaterials = document.getElementById("modalMaterials");
+    const modalSpecs = document.getElementById("modalSpecs");
+    const modalSizing = document.getElementById("modalSizing");
+    const modalSizeInfo = document.getElementById("modalSizeInfo");
+    const modalBuyLink = document.getElementById("modalBuyLink");
+
+    function openShoeModal(id) {
+      const shoe = shoes.find((s) => s.id === id);
+      if (!shoe) return;
+
+      modalImage.src = shoe.image;
+      modalImage.alt = shoe.name;
+      modalTag.textContent = shoe.tag;
+      modalPrice.textContent = `€${shoe.price}`;
+      modalName.textContent = shoe.name;
+      modalSubtitle.textContent = `${shoe.brand} · ${shoe.court}`;
+      modalFit.textContent = `Fit: ${shoe.fit}`;
+      modalPositions.textContent = `Positions: ${shoe.positions.join(", ")}`;
+      modalCourt.textContent = `Court: ${shoe.court}`;
+      modalSizeInfo.textContent = shoe.sizeInfo || "";
+
+      modalColorways.innerHTML = "";
+      (shoe.colorways || []).forEach((cw) => {
+        const pill = document.createElement("div");
+        pill.className = "modal-color-pill";
+        pill.textContent = cw;
+        modalColorways.appendChild(pill);
+      });
+
+      modalMaterials.innerHTML = "";
+      (shoe.materials || []).forEach((m) => {
+        const li = document.createElement("li");
+        li.textContent = m;
+        modalMaterials.appendChild(li);
+      });
+
+      modalSpecs.innerHTML = "";
+      (shoe.specs || []).forEach((s) => {
+        const li = document.createElement("li");
+        li.textContent = s;
+        modalSpecs.appendChild(li);
+      });
+
+      modalSizing.innerHTML = "";
+      (shoe.sizing || []).forEach((s) => {
+        const li = document.createElement("li");
+        li.textContent = s;
+        modalSizing.appendChild(li);
+      });
+
+      modalBuyLink.href = shoe.buyUrl || "#";
+
+      modalBackdrop.classList.add("show");
+    }
+
+    function closeShoeModal() {
+      modalBackdrop.classList.remove("show");
+    }
+
+    modalCloseBtn.addEventListener("click", closeShoeModal);
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeShoeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeShoeModal();
+    });
+
+    // -----------------------------
+    // Quiz logic
+    // -----------------------------
+    const quizQuestions = [
+      {
+        id: "footWidth",
+        text: "What is your foot width?",
+        options: [
+          { value: "narrow", label: "Narrow" },
+          { value: "regular", label: "Regular" },
+          { value: "wide", label: "Wide" },
+        ],
+      },
+      {
+        id: "size",
+        text: "What is your usual basketball shoe size (US)?",
+        options: [
+          { value: "small", label: "6–8" },
+          { value: "medium", label: "8.5–11" },
+          { value: "large", label: "11.5–15" },
+        ],
+      },
+      {
+        id: "position",
+        text: "What position do you primarily play?",
+        options: [
+          { value: "guard", label: "Point / Shooting Guard" },
+          { value: "wing", label: "Small Forward / Stretch Four" },
+          { value: "big", label: "Power Forward / Center" },
+        ],
+      },
+      {
+        id: "playStyle",
+        text: "How would you describe your play style?",
+        options: [
+          { value: "shifty-guard", label: "Shifty, lots of dribbling and changes of direction" },
+          { value: "shooter", label: "Shooter, off-ball movement and pull-ups" },
+          { value: "slasher", label: "Slasher, attacking the rim a lot" },
+          { value: "power-wing", label: "Power wing, strong drives and post-ups" },
+          { value: "big", label: "Big, posting up and protecting the paint" },
+          { value: "all-around", label: "All-around, a bit of everything" },
+        ],
+      },
+      {
+        id: "courtType",
+        text: "Where do you mostly hoop?",
+        options: [
+          { value: "indoor", label: "Indoor only" },
+          { value: "outdoor", label: "Outdoor only" },
+          { value: "both", label: "Both indoor and outdoor" },
+        ],
+      },
+      {
+        id: "colorPreference",
+        text: "What kind of colorway do you prefer?",
+        options: [
+          { value: "subtle", label: "Subtle / neutral (black, white, grey)" },
+          { value: "team", label: "Team colors (matching jersey)" },
+          { value: "loud", label: "Loud / bright / crazy colorways" },
+        ],
+      },
+      {
+        id: "cushioning",
+        text: "What cushioning feel do you prefer?",
+        options: [
+          { value: "soft", label: "Soft and plush (max comfort)" },
+          { value: "balanced", label: "Balanced (mix of court feel and comfort)" },
+          { value: "firm", label: "Firm and responsive (max court feel)" },
+        ],
+      },
+      {
+        id: "tractionPriority",
+        text: "What do you care more about in traction?",
+        options: [
+          { value: "grip", label: "Maximum grip on clean indoor courts" },
+          { value: "durability", label: "Durability for outdoor courts" },
+          { value: "balanced", label: "Balanced between grip and durability" },
+        ],
+      },
+      {
+        id: "budget",
+        text: "What is your budget?",
+        options: [
+          { value: "low", label: "Under €100" },
+          { value: "mid", label: "€100–150" },
+          { value: "high", label: "€150+" },
+        ],
+      },
+      {
+        id: "support",
+        text: "How much ankle/support do you prefer?",
+        options: [
+          { value: "low", label: "Low-top, max mobility" },
+          { value: "mid", label: "Mid-top, balanced" },
+          { value: "high", label: "High/supportive feel" },
+        ],
+      },
+    ];
+
+    let quizStep = 0;
+    const quizAnswers = {};
+    const quizQuestionContainer = document.getElementById("quizQuestionContainer");
+    const quizProgressFill = document.getElementById("quizProgressFill");
+    const quizStepLabel = document.getElementById("quizStepLabel");
+    const quizProgressPercent = document.getElementById("quizProgressPercent");
+    const quizBackBtn = document.getElementById("quizBackBtn");
+    const quizNextBtn = document.getElementById("quizNextBtn");
+    const quizNextLabel = document.getElementById("quizNextLabel");
+    const quizHint = document.getElementById("quizHint");
+    const quizResult = document.getElementById("quizResult");
+    const quizResultMeta = document.getElementById("quizResultMeta");
+    const quizResultCards = document.getElementById("quizResultCards");
+
+    function renderQuizStep() {
+      const total = quizQuestions.length;
+      const current = quizQuestions[quizStep];
+
+      quizQuestionContainer.innerHTML = `
+        <div class="quiz-question">
+          <div class="quiz-question-text">${current.text}</div>
+          <div class="quiz-options" id="quizOptions"></div>
+        </div>
+      `;
+
+      const optionsEl = document.getElementById("quizOptions");
+      current.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "quiz-option";
+        btn.textContent = opt.label;
+        btn.dataset.value = opt.value;
+
+        if (quizAnswers[current.id] === opt.value) {
+          btn.classList.add("selected");
+        }
+
+        btn.addEventListener("click", () => {
+          quizAnswers[current.id] = opt.value;
+          Array.from(optionsEl.children).forEach((child) =>
+            child.classList.remove("selected")
+          );
+          btn.classList.add("selected");
+          quizNextBtn.disabled = false;
+          quizHint.textContent = "Great, click Next to continue.";
+        });
+
+        optionsEl.appendChild(btn);
+      });
+
+      const progress = ((quizStep + 1) / total) * 100;
+      quizProgressFill.style.width = `${progress}%`;
+      quizStepLabel.textContent = `Question ${quizStep + 1} of ${total}`;
+      quizProgressPercent.textContent = `${Math.round(progress)}%`;
+
+      quizBackBtn.disabled = quizStep === 0;
+      quizNextLabel.textContent = quizStep === total - 1 ? "See my matches" : "Next";
+
+      if (quizAnswers[current.id]) {
+        quizNextBtn.disabled = false;
+        quizHint.textContent = "You can change your answer or click Next.";
+      } else {
+        quizNextBtn.disabled = true;
+        quizHint.textContent = "Choose one option to continue.";
+      }
+
+      quizResult.style.display = "none";
+    }
+
+    function scoreShoeForQuiz(shoe, answers) {
+      let score = 0;
+
+      // Foot width
+      if (answers.footWidth === shoe.fitType) {
+        score += 4;
+      } else if (answers.footWidth === "regular" && shoe.fitType === "regular") {
+        score += 3;
+      }
+
+      // Position
+      if (answers.position === "guard") {
+        if (shoe.positions.includes("PG")) score += 5;
+        if (shoe.positions.includes("SG")) score += 3;
+      }
+      if (answers.position === "wing") {
+        if (shoe.positions.includes("SF")) score += 5;
+        if (shoe.positions.includes("PF")) score += 3;
+      }
+      if (answers.position === "big") {
+        if (shoe.positions.includes("C")) score += 5;
+        if (shoe.positions.includes("PF")) score += 3;
+      }
+
+      // Play style
+      if (shoe.playStyle === answers.playStyle) {
+        score += 6;
+      } else if (
+        answers.playStyle === "all-around" &&
+        ["two-way-guard", "all-around", "slasher", "power-wing"].includes(
+          shoe.playStyle
+        )
+      ) {
+        score += 3;
+      }
+
+      // Court type
+      if (answers.courtType === "indoor" && shoe.court.includes("Indoor")) score += 4;
+      if (answers.courtType === "outdoor" && shoe.court.includes("outdoor")) score += 4;
+      if (answers.courtType === "both" && shoe.court.includes("Indoor / outdoor"))
+        score += 4;
+
+      // Cushioning
+      if (answers.cushioning && shoe.cushioning) {
+        if (answers.cushioning === shoe.cushioning) {
+          score += 4;
+        } else if (answers.cushioning === "balanced") {
+          score += 2;
+        }
+      }
+
+      // Traction
+      if (answers.tractionPriority && shoe.traction) {
+        if (answers.tractionPriority === shoe.traction) {
+          score += 3;
+        } else if (answers.tractionPriority === "balanced") {
+          score += 2;
+        }
+      }
+
+      // Budget
+      if (answers.budget && shoe.budget) {
+        if (answers.budget === shoe.budget) {
+          score += 4;
+        } else if (
+          (answers.budget === "mid" && shoe.budget === "high") ||
+          (answers.budget === "mid" && shoe.budget === "low")
+        ) {
+          score += 2;
+        }
+      }
+
+      // Support
+      if (answers.support && shoe.support) {
+        if (answers.support === shoe.support) {
+          score += 3;
+        } else if (answers.support === "mid") {
+          score += 2;
+        }
+      }
+
+      // Color preference (simple heuristic)
+      if (answers.colorPreference === "subtle") {
+        if (shoe.colorways.some((c) => /black|white|grey|gray/i.test(c))) score += 2;
+      } else if (answers.colorPreference === "loud") {
+        if (shoe.colorways.some((c) => /multi|party|rick|bright|sunrise|neon/i.test(c)))
+          score += 2;
+      } else if (answers.colorPreference === "team") {
+        if (
+          shoe.colorways.some((c) =>
+            /lakers|bucks|warriors|nets|jazz|hawks|usa|pelicans|blazers/i.test(c)
+          )
+        )
+          score += 2;
+      }
+
+      return score;
+    }
+
+    function computeQuizResults() {
+      const scored = shoes.map((shoe) => ({
+        shoe,
+        score: scoreShoeForQuiz(shoe, quizAnswers),
+      }));
+
+      scored.sort((a, b) => b.score - a.score);
+
+      return scored.slice(0, 3);
+    }
+
+    quizNextBtn.addEventListener("click", () => {
+      const total = quizQuestions.length;
+      if (!quizQuestions[quizStep]) return;
+
+      if (!quizAnswers[quizQuestions[quizStep].id]) return;
+
+      if (quizStep < total - 1) {
+        quizStep++;
+        renderQuizStep();
+      } else {
+        const matches = computeQuizResults();
+        if (matches.length > 0) {
+          quizResult.style.display = "block";
+
+          const lines = matches.map(
+            (m, idx) =>
+              `${idx + 1}. ${m.shoe.name} (${m.shoe.brand}) · Fit: ${
+                m.shoe.fit
+              } · Court: ${m.shoe.court} · Score: ${m.score}`
+          );
+
+          quizResultMeta.textContent = lines.join(" | ");
+
+          quizResultCards.innerHTML = "";
+          matches.forEach((m, idx) => {
+            const card = document.createElement("div");
+            card.className = "quiz-result-card";
+            card.innerHTML = `
+              <div class="quiz-result-card-name">${idx + 1}. ${
+              m.shoe.name
+            }</div>
+              <div class="quiz-result-card-meta">${m.shoe.brand} · ${
+              m.shoe.court
+            }</div>
+              <div class="quiz-result-card-meta">${m.shoe.positions.join(
+                " · "
+              )} · ${m.shoe.fit}</div>
+              <div class="quiz-result-card-score">Match score: ${m.score}</div>
+            `;
+            card.addEventListener("click", () => openShoeModal(m.shoe.id));
+            quizResultCards.appendChild(card);
+          });
+        }
+      }
+    });
+
+    quizBackBtn.addEventListener("click", () => {
+      if (quizStep > 0) {
+        quizStep--;
+        renderQuizStep();
+      }
+    });
+
+    renderQuizStep();
+
+    // -----------------------------
+    // Scroll / navigation
+    // -----------------------------
+    const scrollToQuizBtn = document.getElementById("scrollToQuizBtn");
+    const heroQuizBtn = document.getElementById("heroQuizBtn");
+    const scrollToGridBtn = document.getElementById("scrollToGridBtn");
+    const quizPanel = document.getElementById("quizPanel");
+    const shoeGridTop = document.getElementById("shoeGridTop");
+
+    scrollToQuizBtn.addEventListener("click", () => {
+      quizPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    heroQuizBtn.addEventListener("click", () => {
+      quizPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    scrollToGridBtn.addEventListener("click", () => {
+      shoeGridTop.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+</body>
+</html>
